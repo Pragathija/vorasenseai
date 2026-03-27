@@ -92,7 +92,7 @@ export async function streamChat({
 }
 
 // Speech Recognition wrapper
-export function createSpeechRecognition(lang: string): SpeechRecognition | null {
+export function createSpeechRecognition(lang: string): any | null {
   const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
   if (!SpeechRecognition) return null;
 
