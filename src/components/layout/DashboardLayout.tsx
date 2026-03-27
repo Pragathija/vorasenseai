@@ -1,27 +1,58 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { BrainMic } from "@/components/BrainMic";
-import { Search, Bell, Zap, Flame, User, LogOut } from "lucide-react";
+import { Search, Bell, Zap, Flame, User, LogOut, Globe, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { useLanguage } from "@/contexts/LanguageContext";
+import type { LanguageCode } from "@/i18n/translations";
+
+const languages: { code: LanguageCode; label: string; name: string }[] = [
+  { code: "en", label: "EN", name: "English" },
+  { code: "hi", label: "HI", name: "Hindi" },
+  { code: "ta", label: "TA", name: "Tamil" },
+  { code: "es", label: "ES", name: "Spanish" },
+  { code: "fr", label: "FR", name: "French" },
+  { code: "de", label: "DE", name: "German" },
+  { code: "ja", label: "JA", name: "Japanese" },
+  { code: "zh", label: "ZH", name: "Chinese" },
+];
 
 export function DashboardLayout() {
   const navigate = useNavigate();
+  const { language, setLanguage, t } = useLanguage();
+  const currentLang = languages.find((l) => l.code === language) || languages[0];
 
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
 
       <div className="ml-[240px] transition-all duration-300">
-        {/* Top bar */}
         <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border/50 bg-card/80 px-6 backdrop-blur-xl">
           <div className="relative w-96">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input placeholder="Search lessons..." className="pl-10 bg-muted/50 border-0" />
+            <Input placeholder={t.searchLessons} className="pl-10 bg-muted/50 border-0" />
           </div>
 
           <div className="flex items-center gap-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-1.5">
+                  <Globe className="h-4 w-4" />
+                  {currentLang.label}
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {languages.map((l) => (
+                  <DropdownMenuItem key={l.code} onClick={() => setLanguage(l.code)}>
+                    {l.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <div className="flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm">
               <Zap className="h-4 w-4 text-vs-cyan" />
               <span className="font-medium">0</span>
@@ -32,9 +63,7 @@ export function DashboardLayout() {
             </div>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] text-destructive-foreground">
-                0
-              </span>
+              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] text-destructive-foreground">0</span>
             </Button>
 
             <DropdownMenu>
@@ -45,9 +74,7 @@ export function DashboardLayout() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>
-                  Settings
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>{t.settings}</DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/")} className="text-destructive">
                   <LogOut className="mr-2 h-4 w-4" /> Logout
                 </DropdownMenuItem>

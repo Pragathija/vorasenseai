@@ -2,9 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Globe, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import type { LanguageCode } from "@/i18n/translations";
 
-const languages = [
+const languages: { code: LanguageCode; label: string; name: string }[] = [
   { code: "en", label: "EN", name: "English" },
   { code: "hi", label: "HI", name: "Hindi" },
   { code: "ta", label: "TA", name: "Tamil" },
@@ -16,8 +17,9 @@ const languages = [
 ];
 
 export function Navbar() {
-  const [lang, setLang] = useState(languages[0]);
   const navigate = useNavigate();
+  const { language, setLanguage, t } = useLanguage();
+  const currentLang = languages.find((l) => l.code === language) || languages[0];
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-xl">
@@ -34,22 +36,22 @@ export function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="gap-1.5">
                 <Globe className="h-4 w-4" />
-                {lang.label}
+                {currentLang.label}
                 <ChevronDown className="h-3 w-3" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               {languages.map((l) => (
-                <DropdownMenuItem key={l.code} onClick={() => setLang(l)}>
+                <DropdownMenuItem key={l.code} onClick={() => setLanguage(l.code)}>
                   {l.name}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant="outline" onClick={() => navigate("/login")}>Login</Button>
+          <Button variant="outline" onClick={() => navigate("/login")}>{t.login}</Button>
           <Button className="vs-gradient-hero border-0 text-primary-foreground" onClick={() => navigate("/register")}>
-            Sign Up
+            {t.signUp}
           </Button>
         </div>
       </div>
