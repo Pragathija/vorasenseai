@@ -14,7 +14,291 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          language: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          language?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          language?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          created_at: string
+          description: string
+          hours: number
+          id: string
+          lessons_count: number
+          quizzes_count: number
+          sort_order: number
+          tags: string[] | null
+          title: string
+          track: string
+          xp_reward: number
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          hours?: number
+          id?: string
+          lessons_count?: number
+          quizzes_count?: number
+          sort_order?: number
+          tags?: string[] | null
+          title: string
+          track?: string
+          xp_reward?: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          hours?: number
+          id?: string
+          lessons_count?: number
+          quizzes_count?: number
+          sort_order?: number
+          tags?: string[] | null
+          title?: string
+          track?: string
+          xp_reward?: number
+        }
+        Relationships: []
+      }
+      leaderboard_entries: {
+        Row: {
+          country: string | null
+          courses_completed: number
+          display_name: string
+          id: string
+          level: number
+          streak_days: number
+          updated_at: string
+          user_id: string
+          xp: number
+        }
+        Insert: {
+          country?: string | null
+          courses_completed?: number
+          display_name?: string
+          id?: string
+          level?: number
+          streak_days?: number
+          updated_at?: string
+          user_id: string
+          xp?: number
+        }
+        Update: {
+          country?: string | null
+          courses_completed?: number
+          display_name?: string
+          id?: string
+          level?: number
+          streak_days?: number
+          updated_at?: string
+          user_id?: string
+          xp?: number
+        }
+        Relationships: []
+      }
+      learning_paths: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          is_recommended: boolean | null
+          position: number
+          user_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          is_recommended?: boolean | null
+          position?: number
+          user_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          is_recommended?: boolean | null
+          position?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_paths_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          age: number | null
+          avatar_url: string | null
+          country: string | null
+          created_at: string
+          email: string
+          full_name: string
+          gender: string | null
+          id: string
+          learning_goal: string | null
+          level: number
+          preferred_language: string | null
+          streak_days: number
+          total_learning_minutes: number
+          updated_at: string
+          visual_impairment: string | null
+          voice_preference: string | null
+          xp: number
+        }
+        Insert: {
+          age?: number | null
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          gender?: string | null
+          id: string
+          learning_goal?: string | null
+          level?: number
+          preferred_language?: string | null
+          streak_days?: number
+          total_learning_minutes?: number
+          updated_at?: string
+          visual_impairment?: string | null
+          voice_preference?: string | null
+          xp?: number
+        }
+        Update: {
+          age?: number | null
+          avatar_url?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          gender?: string | null
+          id?: string
+          learning_goal?: string | null
+          level?: number
+          preferred_language?: string | null
+          streak_days?: number
+          total_learning_minutes?: number
+          updated_at?: string
+          visual_impairment?: string | null
+          voice_preference?: string | null
+          xp?: number
+        }
+        Relationships: []
+      }
+      quiz_results: {
+        Row: {
+          attempts: number
+          course_id: string
+          created_at: string
+          id: string
+          max_score: number
+          quiz_title: string
+          score: number
+          time_taken_seconds: number | null
+          user_id: string
+        }
+        Insert: {
+          attempts?: number
+          course_id: string
+          created_at?: string
+          id?: string
+          max_score?: number
+          quiz_title?: string
+          score?: number
+          time_taken_seconds?: number | null
+          user_id: string
+        }
+        Update: {
+          attempts?: number
+          course_id?: string
+          created_at?: string
+          id?: string
+          max_score?: number
+          quiz_title?: string
+          score?: number
+          time_taken_seconds?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_results_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_progress: {
+        Row: {
+          completed_at: string | null
+          completed_lessons: number
+          course_id: string
+          id: string
+          score: number | null
+          started_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_lessons?: number
+          course_id: string
+          id?: string
+          score?: number | null
+          started_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_lessons?: number
+          course_id?: string
+          id?: string
+          score?: number | null
+          started_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
