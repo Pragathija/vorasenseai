@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import type { LanguageCode } from "@/i18n/translations";
 
 const languages: { code: LanguageCode; label: string; name: string }[] = [
@@ -22,7 +25,23 @@ const languages: { code: LanguageCode; label: string; name: string }[] = [
 export function DashboardLayout() {
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const { user, signOut } = useAuth();
   const currentLang = languages.find((l) => l.code === language) || languages[0];
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -53,29 +72,28 @@ export function DashboardLayout() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm">
-              <Zap className="h-4 w-4 text-vs-cyan" />
-              <span className="font-medium">0</span>
+            <div className="flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-sm">
+              <Zap className="h-4 w-4 text-primary" />
+              <span className="font-medium">{profile?.xp ?? 0}</span>
             </div>
-            <div className="flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm">
+            <div className="flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-sm">
               <Flame className="h-4 w-4 text-destructive" />
-              <span className="font-medium">0</span>
+              <span className="font-medium">{profile?.streak_days ?? 0}</span>
             </div>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] text-destructive-foreground">0</span>
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2">
                   <User className="h-4 w-4" />
-                  <span className="text-sm font-medium">User</span>
+                  <span className="text-sm font-medium">{profile?.full_name || "User"}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={() => navigate("/dashboard/settings")}>{t.settings}</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/")} className="text-destructive">
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
                   <LogOut className="mr-2 h-4 w-4" /> Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>

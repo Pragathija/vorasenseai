@@ -3,29 +3,77 @@ import { BookOpen, Zap, Clock, Brain as BrainIcon, Mic, Rocket, Award, CheckCirc
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useState } from "react";
 
 export default function Learning() {
   const { t } = useLanguage();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const [activeTrack, setActiveTrack] = useState("foundation");
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("*").eq("id", user!.id).single();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const { data: courses = [] } = useQuery({
+    queryKey: ["courses"],
+    queryFn: async () => {
+      const { data } = await supabase.from("courses").select("*").order("sort_order");
+      return data ?? [];
+    },
+  });
+
+  const { data: progress = [] } = useQuery({
+    queryKey: ["user-progress", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase.from("user_progress").select("*").eq("user_id", user!.id);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
+  const startCourse = useMutation({
+    mutationFn: async (courseId: string) => {
+      const { error } = await supabase.from("user_progress").insert({
+        user_id: user!.id,
+        course_id: courseId,
+        status: "in_progress",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-progress"] });
+      toast.success("Course started!");
+    },
+  });
 
   const tracks = [
-    { icon: BookOpen, title: t.foundationTrack, desc: "Core concepts for beginners", active: true, emoji: "📕" },
-    { icon: BrainIcon, title: t.dsaTrack, desc: "Data Structures & Algorithms", active: false, emoji: "⚡" },
-    { icon: Mic, title: t.voiceDev, desc: "Voice-enabled applications", active: false, emoji: "🔧" },
-    { icon: Rocket, title: t.advancedTrack, desc: "System design & architecture", active: false, emoji: "🚀" },
+    { icon: BookOpen, title: t.foundationTrack, key: "foundation", emoji: "📕" },
+    { icon: BrainIcon, title: t.dsaTrack, key: "dsa", emoji: "⚡" },
+    { icon: Mic, title: t.voiceDev, key: "voice", emoji: "🔧" },
+    { icon: Rocket, title: t.advancedTrack, key: "advanced", emoji: "🚀" },
   ];
 
-  const courses = [
-    { title: "Programming Fundamentals", desc: "Master variables, data types, and basic syntax", hours: 2, lessons: 5, quizzes: 2, xp: 150, tags: ["Variables", "Data Types", "Operators"], status: "completed" },
-    { title: "Control Flow Mastery", desc: "Loops, conditionals, and decision making", hours: 3, lessons: 6, quizzes: 3, xp: 200, tags: ["If-Else", "Loops", "Switch"], status: "excellent" },
-    { title: "Functions & Modularity", desc: "Build reusable and modular code", hours: 2.5, lessons: 4, quizzes: 2, xp: 175, tags: ["Functions", "Scope", "Parameters"], status: "in-progress" },
-    { title: "Arrays & Collections", desc: "Work with data collections", hours: 4, lessons: 8, quizzes: 4, xp: 300, tags: ["Arrays", "Lists", "Sorting"], status: "locked" },
-  ];
+  const filteredCourses = courses.filter((c: any) => c.track === activeTrack);
+
+  const getStatus = (courseId: string) => {
+    const p = progress.find((p: any) => p.course_id === courseId);
+    return p?.status || "not_started";
+  };
 
   const statusConfig: Record<string, { label: string; color: string; emoji: string }> = {
-    completed: { label: "Completed", color: "bg-green-100 text-green-700", emoji: "🏆" },
-    excellent: { label: "Excellent", color: "bg-yellow-100 text-yellow-700", emoji: "⭐" },
-    "in-progress": { label: "In Progress", color: "bg-blue-100 text-blue-700", emoji: "📖" },
-    locked: { label: "Locked", color: "bg-muted text-muted-foreground", emoji: "🔒" },
+    completed: { label: "Completed", color: "bg-green-500/20 text-green-400", emoji: "🏆" },
+    in_progress: { label: "In Progress", color: "bg-accent/20 text-accent", emoji: "📖" },
+    not_started: { label: "Start", color: "bg-muted text-muted-foreground", emoji: "🚀" },
   };
 
   return (
@@ -37,10 +85,10 @@ export default function Learning() {
         </div>
         <div className="flex gap-3">
           {[
-            { icon: Zap, value: "0", label: t.totalXP, color: "text-vs-cyan" },
-            { icon: Award, value: "Level 1", label: t.currentLevel, color: "text-vs-purple" },
-            { icon: Clock, value: "0h", label: t.learningTime, color: "text-vs-blue" },
-            { icon: CheckCircle, value: "0", label: t.achievements, color: "text-vs-pink" },
+            { icon: Zap, value: profile?.xp ?? 0, label: t.totalXP, color: "text-primary" },
+            { icon: Award, value: `Level ${profile?.level ?? 1}`, label: t.currentLevel, color: "text-secondary" },
+            { icon: Clock, value: `${Math.round((profile?.total_learning_minutes ?? 0) / 60)}h`, label: t.learningTime, color: "text-accent" },
+            { icon: CheckCircle, value: progress.filter((p: any) => p.status === "completed").length, label: t.achievements, color: "text-primary" },
           ].map((s, i) => (
             <div key={i} className="vs-card flex items-center gap-3 px-4 py-3">
               <s.icon className={`h-5 w-5 ${s.color}`} />
@@ -52,48 +100,58 @@ export default function Learning() {
           ))}
         </div>
       </div>
+
       <div>
         <h2 className="mb-4 text-lg font-semibold">{t.chooseTrack}</h2>
         <div className="grid gap-4 md:grid-cols-4">
-          {tracks.map((tr, i) => (
-            <motion.button key={i} whileHover={{ scale: 1.02 }} className={`vs-card p-5 text-left transition-all ${tr.active ? "ring-2 ring-primary vs-gradient-hero text-primary-foreground" : ""}`}>
-              <tr.icon className="mb-2 h-8 w-8" />
-              <div className="flex items-center gap-1 text-sm font-bold">{tr.emoji} {tr.title}</div>
-              <p className={`mt-1 text-xs ${tr.active ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{tr.desc}</p>
+          {tracks.map((tr) => (
+            <motion.button key={tr.key} whileHover={{ scale: 1.02 }} onClick={() => setActiveTrack(tr.key)} className={`vs-card p-5 text-left transition-all ${tr.key === activeTrack ? "ring-2 ring-primary vs-gradient-hero" : ""}`}>
+              <tr.icon className={`mb-2 h-8 w-8 ${tr.key === activeTrack ? "text-primary-foreground" : ""}`} />
+              <div className={`flex items-center gap-1 text-sm font-bold ${tr.key === activeTrack ? "text-primary-foreground" : ""}`}>{tr.emoji} {tr.title}</div>
             </motion.button>
           ))}
         </div>
       </div>
+
       <div className="space-y-4">
-        {courses.map((c, i) => {
-          const st = statusConfig[c.status];
+        {filteredCourses.map((c: any, i: number) => {
+          const status = getStatus(c.id);
+          const st = statusConfig[status];
           return (
-            <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className={`vs-card flex items-center justify-between p-6 ${c.status === "locked" ? "opacity-60" : ""}`}>
+            <motion.div key={c.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="vs-card flex items-center justify-between p-6">
               <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-2xl">{st.emoji}</div>
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-muted text-2xl">{st.emoji}</div>
                 <div>
                   <div className="flex items-center gap-3">
                     <h3 className="text-lg font-semibold text-primary">{c.title}</h3>
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${st.color}`}>{st.emoji} {st.label}</span>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${st.color}`}>{st.label}</span>
                   </div>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{c.desc}</p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{c.description}</p>
                   <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> {c.hours}h</span>
-                    <span className="flex items-center gap-1"><BookOpen className="h-3 w-3" /> {c.lessons} lessons</span>
-                    <span className="flex items-center gap-1"><BrainIcon className="h-3 w-3" /> {c.quizzes} quizzes</span>
-                    <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> {c.xp} XP</span>
+                    <span className="flex items-center gap-1"><BookOpen className="h-3 w-3" /> {c.lessons_count} lessons</span>
+                    <span className="flex items-center gap-1"><BrainIcon className="h-3 w-3" /> {c.quizzes_count} quizzes</span>
+                    <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> {c.xp_reward} XP</span>
                   </div>
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {c.tags.map((tag) => <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>)}
+                    {(c.tags || []).map((tag: string) => <Badge key={tag} variant="outline" className="text-xs">{tag}</Badge>)}
                   </div>
                 </div>
               </div>
-              <Button variant={c.status === "locked" ? "outline" : "default"} className={c.status !== "locked" ? "vs-gradient-hero border-0 text-primary-foreground" : ""} disabled={c.status === "locked"}>
-                {c.status === "completed" || c.status === "excellent" ? "Review →" : c.status === "in-progress" ? "Continue →" : "Locked"}
+              <Button
+                className={status === "not_started" ? "vs-gradient-hero border-0 text-primary-foreground" : ""}
+                variant={status === "not_started" ? "default" : "outline"}
+                onClick={() => status === "not_started" && startCourse.mutate(c.id)}
+                disabled={startCourse.isPending}
+              >
+                {status === "completed" ? "Review →" : status === "in_progress" ? "Continue →" : "Start →"}
               </Button>
             </motion.div>
           );
         })}
+        {filteredCourses.length === 0 && (
+          <div className="vs-card p-12 text-center text-muted-foreground">No courses in this track yet.</div>
+        )}
       </div>
     </div>
   );

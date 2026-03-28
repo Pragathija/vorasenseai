@@ -7,17 +7,28 @@ import { Label } from "@/components/ui/label";
 import { Mail, Lock, ArrowRight, Eye, EyeOff, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { signIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    setLoading(true);
+    const { error } = await signIn(email, password);
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      navigate("/dashboard");
+    }
   };
 
   return (
@@ -36,28 +47,27 @@ export default function Login() {
             <form onSubmit={handleLogin} className="space-y-5">
               <div className="space-y-2">
                 <Label className="flex items-center gap-2 text-sm font-medium"><Mail className="h-4 w-4 text-muted-foreground" /> {t.emailAddress}</Label>
-                <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} required className="bg-muted/50 border-border" />
               </div>
               <div className="space-y-2">
                 <Label className="flex items-center gap-2 text-sm font-medium"><Lock className="h-4 w-4 text-muted-foreground" /> {t.password}</Label>
                 <div className="relative">
-                  <Input type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                  <Input type={showPassword ? "text" : "password"} placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required className="bg-muted/50 border-border" />
                   <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                <div className="text-right">
-                  <Link to="/forgot-password" className="text-xs font-medium text-primary hover:underline">{t.forgotPassword}</Link>
-                </div>
               </div>
-              <Button type="submit" className="w-full vs-gradient-hero border-0 text-primary-foreground gap-2">{t.signIn} <ArrowRight className="h-4 w-4" /></Button>
+              <Button type="submit" className="w-full vs-gradient-hero border-0 text-primary-foreground gap-2" disabled={loading}>
+                {loading ? "Signing in..." : t.signIn} <ArrowRight className="h-4 w-4" />
+              </Button>
             </form>
             <div className="mt-6">
               <div className="relative flex items-center justify-center">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t" /></div>
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-border" /></div>
                 <span className="relative bg-card px-3 text-xs text-muted-foreground">or</span>
               </div>
-              <div className="mt-4 rounded-xl border bg-muted/30 p-4 text-center">
+              <div className="mt-4 rounded-xl border border-border bg-muted/30 p-4 text-center">
                 <p className="text-sm">
                   <span className="font-medium text-primary">{t.newToVoraSense}</span>{" "}
                   <span className="text-muted-foreground">{t.newDesc}</span>
