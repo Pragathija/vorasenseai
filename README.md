@@ -1,6 +1,6 @@
 # 🧠 VoraSense: Adaptive Voice-First Learning
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20Website-brightgreen?style=for-the-badge&logo=vercel)](https://Pragathija.github.io/adaptive-voice-learning-hub/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20Website-brightgreen?style=for-the-badge&logo=vercel)](https://Pragathija.github.io/vorasenseai/)
 
 **VoraSense** is an AI-powered educational platform designed for inclusive learning. It leverages advanced voice recognition and adaptive ML algorithms to create personalized experiences for visually impaired and differently-abled students.
 
@@ -27,8 +27,8 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Pragathija/adaptive-voice-learning-hub.git
-   cd adaptive-voice-learning-hub
+   git clone https://github.com/Pragathija/vorasenseai.git
+   cd vorasenseai
    ```
 
 2. Install dependencies:

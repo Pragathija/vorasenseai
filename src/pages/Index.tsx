@@ -7,6 +7,9 @@ import {
   Globe, Shield, Users, Zap, Layout, Github, Linkedin, Mail 
 } from "lucide-react";
 import brainLogo from "@/assets/brain-logo.png";
+import pragathijaImg from "@/assets/team/pragathija.png";
+import balaImg from "@/assets/team/bala.png";
+import srideviImg from "@/assets/team/sridevi.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Index() {
@@ -32,7 +35,7 @@ export default function Index() {
       name: "Pragathija S",
       role: "Data Science & ML Professional in Progress | Crafting intelligent solutions | Evolving through research & innovation.",
       tags: ["Backend Architecture", "ML Models", "API Design"],
-      image: "/team/pragathija.png",
+      image: pragathijaImg,
       github: "https://github.com/Pragathija",
       linkedin: "https://www.linkedin.com/in/pragathija-s-4b3769330/",
       email: "mailto:praga007thija@gmail.com"
@@ -41,7 +44,7 @@ export default function Index() {
       name: "Bala Nithya M",
       role: "Aspiring Software Developer | IT Student | Tech Enthusiast | Building accessible experiences.",
       tags: ["Frontend Development", "UI/UX Design", "Accessibility"],
-      image: "/team/bala.png",
+      image: balaImg,
       github: "https://github.com/balanithyam",
       linkedin: "https://www.linkedin.com/in/bala-nithya-m-89781b309/",
       email: "mailto:balanithyam04@gmail.com"
@@ -50,7 +53,7 @@ export default function Index() {
       name: "Sridevi P",
       role: "Aspiring Cybersecurity Specialist | Passionate About Securing Networks, Applications & Data.",
       tags: ["Database Design", "API Integration", "Testing"],
-      image: "/team/sridevi.png",
+      image: srideviImg,
       github: "https://github.com/Sridevi-Paramasivan",
       linkedin: "https://www.linkedin.com/in/sridevi-p-713648379/",
       email: "mailto:sridevi90800@gmail.com"
