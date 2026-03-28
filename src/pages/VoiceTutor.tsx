@@ -1,11 +1,13 @@
+
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Send, ThumbsUp, Copy, Brain, BookOpen, Code, Volume2, ChevronLeft, ChevronRight, Mic, MicOff } from "lucide-react";
-import { streamChat, createSpeechRecognition, speak } from "@/services/aiChat";
+import { speak } from "@/services/aiChat";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
+import { useChat } from "@/contexts/ChatContext";
 
 const topicKeys = [
   { icon: BookOpen, label: "allChats" },
@@ -27,100 +29,16 @@ type Message = { role: "user" | "assistant"; content: string; time: string };
 
 export default function VoiceTutor() {
   const { language, speechLang, t } = useLanguage();
-  const { user } = useAuth();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { messages: rawMessages, isListening, isLoading, toggleListening, sendMessage, partialTranscript: interimText } = useChat();
   const [input, setInput] = useState("");
   const [activeTopic, setActiveTopic] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isListening, setIsListening] = useState(false);
-  const [interimText, setInterimText] = useState("");
   const messagesEnd = useRef<HTMLDivElement>(null);
-  const recognitionRef = useRef<any>(null);
+
+  const messages = rawMessages.filter(m => m.role !== 'system');
 
   useEffect(() => {
     messagesEnd.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // Load chat history
-  useEffect(() => {
-    if (!user) return;
-    supabase.from("chat_messages").select("*").eq("user_id", user.id).order("created_at").limit(50).then(({ data }) => {
-      if (data && data.length > 0) {
-        setMessages(data.map((m: any) => ({
-          role: m.role as "user" | "assistant",
-          content: m.content,
-          time: new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        })));
-      }
-    });
-  }, [user]);
-
-  const saveMessage = useCallback(async (role: string, content: string) => {
-    if (!user) return;
-    await supabase.from("chat_messages").insert({ user_id: user.id, role, content, language });
-  }, [user, language]);
-
-  const sendMessage = useCallback(async (text: string) => {
-    if (!text.trim() || isLoading) return;
-    const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    const userMsg: Message = { role: "user", content: text, time: now };
-    const newMessages = [...messages, userMsg];
-    setMessages(newMessages);
-    setInput("");
-    setIsLoading(true);
-    saveMessage("user", text);
-
-    let assistantSoFar = "";
-    const aiNow = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-    const upsert = (chunk: string) => {
-      assistantSoFar += chunk;
-      setMessages((prev) => {
-        const last = prev[prev.length - 1];
-        if (last?.role === "assistant" && prev.length > 1 && prev[prev.length - 2]?.role === "user") {
-          return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantSoFar } : m));
-        }
-        return [...prev, { role: "assistant", content: assistantSoFar, time: aiNow }];
-      });
-    };
-
-    const chatHistory = newMessages.map((m) => ({ role: m.role, content: m.content }));
-
-    await streamChat({
-      messages: chatHistory,
-      language,
-      onDelta: upsert,
-      onDone: () => {
-        setIsLoading(false);
-        saveMessage("assistant", assistantSoFar);
-        if (assistantSoFar) speak(assistantSoFar.replace(/[#*`_]/g, "").slice(0, 500), speechLang);
-      },
-      onError: (err) => {
-        setIsLoading(false);
-        setMessages((prev) => [...prev, { role: "assistant", content: `Error: ${err}`, time: aiNow }]);
-      },
-    });
-  }, [messages, language, speechLang, isLoading, saveMessage]);
-
-  const toggleListening = useCallback(() => {
-    if (isListening) { recognitionRef.current?.stop(); setIsListening(false); return; }
-    const recognition = createSpeechRecognition(speechLang);
-    if (!recognition) return;
-    recognitionRef.current = recognition;
-    recognition.onresult = (event: any) => {
-      let final = "", interim = "";
-      for (let i = 0; i < event.results.length; i++) {
-        if (event.results[i].isFinal) final += event.results[i][0].transcript;
-        else interim += event.results[i][0].transcript;
-      }
-      setInterimText(interim);
-      if (final) { setInterimText(""); sendMessage(final); }
-    };
-    recognition.onend = () => setIsListening(false);
-    recognition.onerror = () => setIsListening(false);
-    recognition.start();
-    setIsListening(true);
-  }, [isListening, speechLang, sendMessage]);
+  }, [messages, interimText]);
 
   const topicLabels = topicKeys.map((tk) => tk.label === "allChats" ? t.allChats : tk.label);
 
@@ -155,7 +73,6 @@ export default function VoiceTutor() {
               <div className="max-w-[70%]">
                 <div className="flex items-center gap-2 mb-1">
                   <span className={`text-xs font-medium ${msg.role === "assistant" ? "text-primary" : "text-secondary"}`}>{msg.role === "assistant" ? "AI Tutor" : "You"}</span>
-                  <span className="text-xs text-muted-foreground">{msg.time}</span>
                 </div>
                 <div className={`rounded-2xl px-4 py-3 text-sm ${msg.role === "user" ? "vs-gradient-hero text-primary-foreground" : "bg-muted"}`}>
                   {msg.role === "assistant" ? <div className="prose prose-sm prose-invert max-w-none [&>*]:my-1"><ReactMarkdown>{msg.content}</ReactMarkdown></div> : msg.content}

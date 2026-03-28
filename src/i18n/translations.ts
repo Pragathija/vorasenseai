@@ -25,10 +25,33 @@ export interface Translations {
   smartAnalyticsDesc: string;
   multilingualSupport: string;
   multilingualDesc: string;
+  realTimeFeedback: string;
+  realTimeFeedbackDesc: string;
   accessibleDesign: string;
   accessibleDesc: string;
   globalLeaderboard: string;
   globalLeaderboardDesc: string;
+  // Homepage New Sections
+  howItWorks: string;
+  howDesc: string;
+  signUpStep: string;
+  signUpStepDesc: string;
+  quizStep: string;
+  quizStepDesc: string;
+  lessonsStep: string;
+  lessonsStepDesc: string;
+  moreThanLessons: string;
+  moreThanDesc: string;
+  voiceTutorFeature: string;
+  analyticsFeature: string;
+  leaderboardFeature: string;
+  accessibilityFeature: string;
+  meetTeam: string;
+  teamDesc: string;
+  readyStart: string;
+  privacy: string;
+  terms: string;
+  contact: string;
   // Login
   welcomeBack: string;
   signInDesc: string;
@@ -125,8 +148,30 @@ const en: Translations = {
   adaptiveAI: "Adaptive AI Engine", adaptiveAIDesc: "ML models detect confusion and adapt content difficulty in real-time.",
   smartAnalytics: "Smart Analytics", smartAnalyticsDesc: "Track progress with cognitive scoring and personalized insights.",
   multilingualSupport: "Multilingual Support", multilingualDesc: "Learn in 8+ languages with real-time voice translation.",
+  realTimeFeedback: "Real Time Feedback",
+  realTimeFeedbackDesc: "Instant corrections and hints help you master concepts faster than ever before.",
   accessibleDesign: "Accessible by Design", accessibleDesc: "Built for visually impaired and differently-abled students.",
   globalLeaderboard: "Global Leaderboard", globalLeaderboardDesc: "Compete nationwide and worldwide with fellow learners.",
+  howItWorks: "How It Works",
+  howDesc: "Three simple steps to begin your personalized learning journey.",
+  signUpStep: "Sign Up Free",
+  signUpStepDesc: "Create your account in seconds — no credit card required.",
+  quizStep: "Voice-Driven Quiz",
+  quizStepDesc: "Our AI assesses your current level and learning style instantly.",
+  lessonsStep: "Personalized Lessons",
+  lessonsStepDesc: "Receive a custom curriculum and start learning with full voice support.",
+  moreThanLessons: "More Than Just Lessons",
+  moreThanDesc: "VoraSense offers a complete ecosystem to track your progress, stay motivated, and learn at your own pace with voice-first interactions.",
+  voiceTutorFeature: "Voice Tutor – practice speaking and listening in real time.",
+  analyticsFeature: "Analytics dashboard to visualize your mastery and improvement areas.",
+  leaderboardFeature: "Leaderboards and streaks to keep you engaged daily.",
+  accessibilityFeature: "End-to-end accessibility tested for screen readers and voice navigation.",
+  meetTeam: "Meet the Team",
+  teamDesc: "Passionate developers dedicated to making education accessible for everyone.",
+  readyStart: "Ready to Start Learning?",
+  privacy: "Privacy",
+  terms: "Terms",
+  contact: "Contact",
   welcomeBack: "Welcome Back!", signInDesc: "Sign in to continue your learning journey",
   emailAddress: "Email Address", password: "Password", forgotPassword: "Forgot password?",
   signIn: "Sign In", newToVoraSense: "New to VoraSense?",
@@ -172,8 +217,30 @@ const hi: Translations = {
   adaptiveAI: "अनुकूली एआई इंजन", adaptiveAIDesc: "ML मॉडल भ्रम का पता लगाते हैं और रीयल-टाइम में कठिनाई को अनुकूलित करते हैं।",
   smartAnalytics: "स्मार्ट एनालिटिक्स", smartAnalyticsDesc: "संज्ञानात्मक स्कोरिंग और व्यक्तिगत अंतर्दृष्टि के साथ प्रगति ट्रैक करें।",
   multilingualSupport: "बहुभाषी समर्थन", multilingualDesc: "8+ भाषाओं में रीयल-टाइम वॉइस अनुवाद के साथ सीखें।",
+  realTimeFeedback: "रीयल टाइम फीडबैक",
+  realTimeFeedbackDesc: "त्वरित सुधार और संकेत आपको पहले से कहीं अधिक तेज़ी से अवधारणाओं में महारत हासिल करने में मदद करते हैं।",
   accessibleDesign: "सुलभ डिज़ाइन", accessibleDesc: "दृष्टिबाधित और विशेष रूप से सक्षम छात्रों के लिए निर्मित।",
   globalLeaderboard: "वैश्विक लीडरबोर्ड", globalLeaderboardDesc: "साथी शिक्षार्थियों के साथ राष्ट्रीय और विश्वव्यापी प्रतिस्पर्धा करें।",
+  howItWorks: "यह कैसे काम करता है",
+  howDesc: "आपकी व्यक्तिगत सीखने की यात्रा शुरू करने के लिए तीन सरल कदम।",
+  signUpStep: "मुफ़्त साइन अप करें",
+  signUpStepDesc: "सेकंडों में अपना खाता बनाएं — किसी क्रेडिट कार्ड की आवश्यकता नहीं है।",
+  quizStep: "वॉइस-संचालित क्विज़",
+  quizStepDesc: "हमारा एआई आपकी वर्तमान स्तर और सीखने की शैली का तुरंत आकलन करता है।",
+  lessonsStep: "व्यक्तिगत पाठ",
+  lessonsStepDesc: "एक कस्टम पाठ्यक्रम प्राप्त करें और पूर्ण वॉइस समर्थन के साथ सीखना शुरू करें।",
+  moreThanLessons: "केवल पाठों से अधिक",
+  moreThanDesc: "VoraSense आपकी प्रगति को ट्रैक करने, प्रेरित रहने और वॉइस-फर्स्ट इंटरैक्शन के साथ अपनी गति से सीखने के लिए एक संपूर्ण पारिस्थितिकी तंत्र प्रदान करता है।",
+  voiceTutorFeature: "वॉइस ट्यूटर - वास्तविक समय में बोलने और सुनने का अभ्यास करें।",
+  analyticsFeature: "आपकी महारत और सुधार क्षेत्रों की कल्पना करने के लिए विश्लेषण डैशबोर्ड।",
+  leaderboardFeature: "आपको दैनिक रूप से व्यस्त रखने के लिए लीडरबोर्ड और स्ट्रीक्स।",
+  accessibilityFeature: "स्क्रीन रीडर्स और वॉइस नेविगेशन के लिए एंड-टू-एंड सुलभता परीक्षण।",
+  meetTeam: "टीम से मिलें",
+  teamDesc: "सभी के लिए शिक्षा को सुलभ बनाने के लिए समर्पित उत्साही डेवलपर्स।",
+  readyStart: "सीखने के लिए तैयार हैं?",
+  privacy: "गोपनीयता",
+  terms: "नियम",
+  contact: "संपर्क",
   welcomeBack: "वापसी पर स्वागत!", signInDesc: "अपनी सीखने की यात्रा जारी रखने के लिए साइन इन करें",
   emailAddress: "ईमेल पता", password: "पासवर्ड", forgotPassword: "पासवर्ड भूल गए?",
   signIn: "साइन इन", newToVoraSense: "VoraSense में नए हैं?",
@@ -219,8 +286,30 @@ const ta: Translations = {
   adaptiveAI: "தகவமைப்பு AI இயந்திரம்", adaptiveAIDesc: "ML மாதிரிகள் குழப்பத்தை கண்டறிந்து நிகழ்நேரத்தில் கடினத்தை மாற்றுகின்றன.",
   smartAnalytics: "ஸ்மார்ட் பகுப்பாய்வு", smartAnalyticsDesc: "அறிவாற்றல் மதிப்பெண் மற்றும் தனிப்பட்ட நுண்ணறிவுகளுடன் முன்னேற்றத்தை கண்காணிக்கவும்.",
   multilingualSupport: "பன்மொழி ஆதரவு", multilingualDesc: "8+ மொழிகளில் நிகழ்நேர குரல் மொழிபெயர்ப்புடன் கற்றுக்கொள்ளுங்கள்.",
+  realTimeFeedback: "நிகழ்நேர கருத்து",
+  realTimeFeedbackDesc: "உடனடித் திருத்தங்கள் மற்றும் குறிப்புகள் நீங்கள் முன்பை விட வேகமாக கருத்துக்களை மாஸ்டர் செய்ய உதவும்.",
   accessibleDesign: "அணுகக்கூடிய வடிவமைப்பு", accessibleDesc: "பார்வை குறைபாடுள்ள மாணவர்களுக்காக கட்டமைக்கப்பட்டது.",
   globalLeaderboard: "உலகளாவிய தரவரிசை", globalLeaderboardDesc: "சக கற்பவர்களுடன் தேசிய மற்றும் உலகளாவிய போட்டியிடுங்கள்.",
+  howItWorks: "இது எப்படி வேலை செய்கிறது",
+  howDesc: "உங்கள் தனிப்பட்ட கற்றல் பயணத்தைத் தொடங்க மூன்று எளிய வழிமுறைகள்.",
+  signUpStep: "இலவசமாக பதிவு செய்யுங்கள்",
+  signUpStepDesc: "வினாடிகளில் உங்கள் கணக்கை உருவாக்கவும் — கிரெடிட் கார்டு தேவையில்லை.",
+  quizStep: "குரல் சார்ந்த வினாடி வினா",
+  quizStepDesc: "எங்கள் AI உங்கள் தற்போதைய நிலை மற்றும் கற்றல் பாணியை உடனடியாக மதிப்பிடுகிறது.",
+  lessonsStep: "தனிப்பயனாக்கப்பட்ட பாடங்கள்",
+  lessonsStepDesc: "தனிப்பயன் பாடத்திட்டத்தைப் பெற்று முழு குரல் ஆதரவுடன் கற்கத் தொடங்குங்கள்.",
+  moreThanLessons: "வெறும் பாடங்களை விட அதிகம்",
+  moreThanDesc: "VoraSense உங்கள் முன்னேற்றத்தைக் கண்காணிக்கவும், ஊக்கத்துடன் இருக்கவும் மற்றும் குரல்-முதல் தொடர்புகளுடன் உங்கள் சொந்த வேகத்தில் கற்கவும் ஒரு முழுமையான சுற்றுச்சூழல் அமைப்பை வழங்குகிறது.",
+  voiceTutorFeature: "குரல் பயிற்சியாளர் - நிகழ்நேரத்தில் பேசுவதையும் கேட்பதையும் பயிற்சி செய்யுங்கள்.",
+  analyticsFeature: "உங்கள் தேர்ச்சி மற்றும் முன்னேற்றப் பகுதிகளைக் காண பகுப்பாய்வு டாஷ்போர்டு.",
+  leaderboardFeature: "தினமும் உங்களை ஈடுபாட்டுடன் வைத்திருக்க லீடர்போர்டுகள் மற்றும் கோடுகள்.",
+  accessibilityFeature: "திரை வாசகர்கள் மற்றும் குரல் வழிசெலுத்தலுக்காக ஆரம்பம் முதல் முடிவு வரை அணுகல் சோதனை செய்யப்பட்டது.",
+  meetTeam: "குழுவைச் சந்திக்கவும்",
+  teamDesc: "அனைவருக்கும் கல்வியை அணுகக்கூடியதாக மாற்ற அர்ப்பணிக்கப்பட்ட ஆர்வமுள்ள மேம்பாட்டாளர்கள்.",
+  readyStart: "கற்கத் தயாரா?",
+  privacy: "தனியுரிமை",
+  terms: "விதிமுறைகள்",
+  contact: "தொடர்பு",
   welcomeBack: "மீண்டும் வரவேற்கிறோம்!", signInDesc: "உங்கள் கற்றல் பயணத்தை தொடர உள்நுழையவும்",
   emailAddress: "மின்னஞ்சல் முகவரி", password: "கடவுச்சொல்", forgotPassword: "கடவுச்சொல் மறந்துவிட்டதா?",
   signIn: "உள்நுழை", newToVoraSense: "VoraSense-க்கு புதியவரா?",

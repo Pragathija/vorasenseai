@@ -6,6 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { PlayCircle, Sparkles, Clock, ArrowRight } from "lucide-react";
 
 export default function DashboardHome() {
   const navigate = useNavigate();
@@ -60,6 +61,58 @@ export default function DashboardHome() {
             </div>
           </motion.div>
         ))}
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+          <div className="vs-card p-6 h-full flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-medium text-primary mb-2">
+                <PlayCircle className="h-4 w-4" /> Current Course
+              </div>
+              <h3 className="text-xl font-bold mb-1">Advanced Voice Interfaces</h3>
+              <p className="text-sm text-muted-foreground mb-4">Voice Development Track</p>
+              
+              <div className="space-y-2 mb-6">
+                <div className="flex justify-between text-sm">
+                  <span>Progress</span>
+                  <span className="font-medium">45%</span>
+                </div>
+                <div className="h-2 rounded-full bg-muted overflow-hidden">
+                  <div className="h-full bg-primary w-[45%]" />
+                </div>
+              </div>
+            </div>
+            
+            <Button className="w-full justify-between group" onClick={() => navigate("/dashboard/learning")}>
+              Resume: Multilingual STT
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
+          <div className="vs-card p-6 h-full border-primary/20 bg-primary/5">
+            <div className="flex items-center gap-2 text-sm font-medium text-primary mb-2">
+              <Sparkles className="h-4 w-4" /> AI Recommended Next
+            </div>
+            <h3 className="text-xl font-bold mb-2">AI & ML Foundations</h3>
+            <p className="text-sm text-muted-foreground mb-4">Recommended because you are excelling in Voice Development.</p>
+            
+            <div className="flex gap-4 text-sm font-medium mb-6">
+              <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                <Trophy className="h-4 w-4" /> 98% Match
+              </span>
+              <span className="flex items-center gap-1 text-muted-foreground">
+                <Clock className="h-4 w-4" /> 4 hours
+              </span>
+            </div>
+            
+            <Button variant="outline" className="w-full border-primary/20 hover:bg-primary/10" onClick={() => navigate("/dashboard/learning")}>
+              View Course Details
+            </Button>
+          </div>
+        </motion.div>
       </div>
 
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useLanguage } from "@/contexts/LanguageContext";
 import type { LanguageCode } from "@/i18n/translations";
+import brainLogo from "@/assets/brain-logo.png";
 
 const languages: { code: LanguageCode; label: string; name: string }[] = [
   { code: "en", label: "EN", name: "English" },
@@ -25,9 +26,7 @@ export function Navbar() {
     <nav className="sticky top-0 z-50 border-b border-border/50 bg-card/80 backdrop-blur-xl">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl vs-gradient-hero">
-            <span className="text-lg font-bold text-primary-foreground">V</span>
-          </div>
+          <img src={brainLogo} alt="VoraSense" className="h-10 w-10 object-contain rounded-xl" />
           <span className="text-xl font-display font-bold text-primary">VoraSense</span>
         </Link>
 

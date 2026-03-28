@@ -11,10 +11,12 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 export default function Settings() {
   const { t } = useLanguage();
   const { user } = useAuth();
+  const { theme, setTheme } = useTheme();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState(0);
 
@@ -194,6 +196,21 @@ export default function Settings() {
             <div className="space-y-6">
               <h2 className="text-xl font-semibold">{t.appearance}</h2>
               <p className="text-muted-foreground">VoraSense uses a dark theme optimized for reduced eye strain and accessibility.</p>
+              <div className="space-y-4 pt-4 border-t border-border">
+                <div className="space-y-2">
+                  <Label>Theme Selection</Label>
+                  <Select value={theme} onValueChange={setTheme}>
+                    <SelectTrigger className="bg-muted/50 border-border">
+                      <SelectValue placeholder="Select theme" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="light">Light Mode</SelectItem>
+                      <SelectItem value="dark">Dark Mode</SelectItem>
+                      <SelectItem value="system">System Default</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
           )}
         </div>

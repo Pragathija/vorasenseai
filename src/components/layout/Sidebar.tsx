@@ -1,10 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   Home, BookOpen, Brain, TrendingUp, BarChart3,
-  Trophy, Users, Settings, FileText, ChevronRight
+  Trophy, Users, Settings, FileText, ChevronRight, History
 } from "lucide-react";
 import brainLogo from "@/assets/brain-logo.png";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/dashboard" },
@@ -21,6 +24,7 @@ const navItems = [
 export function Sidebar() {
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
+  const { user } = useAuth();
 
   return (
     <aside
